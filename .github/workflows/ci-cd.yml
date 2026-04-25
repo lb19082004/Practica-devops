@@ -27,9 +27,7 @@ jobs:
         run: npm install
 
       - name: Ejecutar pruebas unitarias
-        run: npx jest
-        env:
-          NODE_ENV: test
+        run: npm test
 
   build-and-push:
     needs: test
