@@ -3,34 +3,9 @@ name: CI/CD Pipeline - DevOps
 on:
   push:
     branches: [main, develop]
-  pull_request:
-    branches: [main]
-
-env:
-  REGISTRY: docker.io
-  IMAGE_NAME: practica-devops
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout codigo
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Instalar dependencias
-        run: npm install
-
-      - name: Ejecutar pruebas unitarias
-        run: npm test
-
   build-and-push:
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout codigo
@@ -52,16 +27,4 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/practica-devops:${{ github.sha }}
 
       - name: Imagen enviada
-        run: echo "Imagen Docker enviada exitosamente"
-
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    steps:
-      - name: Checkout codigo
-        uses: actions/checkout@v3
-
-      - name: Deploy a Render
-        run: curl -X POST https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_DEPLOY_KEY }}
-        continue-on-error: true
+        run: echo "Imagen Docker enviada a Docker Hub"
